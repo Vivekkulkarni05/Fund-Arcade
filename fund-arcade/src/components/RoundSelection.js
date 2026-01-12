@@ -7,7 +7,37 @@ const RoundSelection = ({ gameState, updateGameState }) => {
   const { teamId } = useParams();
   
   const team = gameState.teams.find(t => t.id === parseInt(teamId));
-  const [localBaseScores, setLocalBaseScores] = useState(team ? team.baseScores : [0, 0, 0, 0, 0]);
+
+  // --- CONFIGURATION: EDIT YOUR ROUND NAMES HERE ---
+  const roundNames = [
+    "Uber",           // Round 1 Name
+    "Airbnb",         // Round 2 Name
+    "Spotify",        // Round 3 Name
+    "SpaceX",         // Round 4 Name
+    "Stripe",         // Round 5 Name
+    "Zerodha",        // Round 6 Name
+    "Razorpay",       // Round 7 Name
+    "Zomato"          // Round 8 Name
+  ];
+  // -------------------------------------------------
+  
+  // CHANGED: Initialize state using a function to clean up '0's
+  const [localBaseScores, setLocalBaseScores] = useState(() => {
+    // Safety check
+    if (!team || !team.baseScores) {
+        return Array(8).fill('');
+    }
+
+    // Create a copy of the existing scores
+    const scores = [...team.baseScores];
+
+    // Ensure array is exactly 8 items long
+    while (scores.length < 8) scores.push('');
+
+    // CRITICAL FIX: Convert any 0 values to '' (empty string)
+    // This forces the "Enter score" placeholder to appear instead of 0.
+    return scores.map(s => (s === 0 ? '' : s));
+  });
 
   if (!team) {
     navigate('/');
@@ -16,7 +46,16 @@ const RoundSelection = ({ gameState, updateGameState }) => {
 
   const handleBaseScoreChange = (roundIndex, value) => {
     const newBaseScores = [...localBaseScores];
-    newBaseScores[roundIndex] = parseFloat(value) || 0;
+    // Ensure array is long enough
+    while (newBaseScores.length < 8) newBaseScores.push('');
+    
+    // If value is empty string, keep it empty.
+    if (value === '') {
+        newBaseScores[roundIndex] = '';
+    } else {
+        newBaseScores[roundIndex] = parseFloat(value);
+    }
+    
     setLocalBaseScores(newBaseScores);
     
     // Update in gameState
@@ -32,11 +71,36 @@ const RoundSelection = ({ gameState, updateGameState }) => {
   const handleGoClick = (roundIndex) => {
     const baseScore = localBaseScores[roundIndex];
 
-    if (baseScore <= 0) {
-      alert('Please enter a valid base score greater than 0');
+    // Validation to check for empty string
+    if (baseScore === '' || baseScore === null || baseScore === undefined) {
+        alert('Please enter a score');
+        return;
+    }
+
+    if (baseScore < 0) {
+      alert('Please enter a valid base score (0 or greater)');
       return;
     }
 
+    // Logic for 0 input: Skip options, mark as completed with 0
+    if (baseScore === 0) {
+        const updatedTeams = gameState.teams.map(t => {
+            if (t.id === team.id) {
+                const newFinalScores = [...(t.finalScores || [])]; 
+                while(newFinalScores.length < 8) newFinalScores.push(null);
+                
+                newFinalScores[roundIndex] = 0; // Set Result to 0
+                
+                return { ...t, finalScores: newFinalScores };
+            }
+            return t;
+        });
+
+        updateGameState({ teams: updatedTeams });
+        return; // Return immediately (Do NOT navigate)
+    }
+
+    // Normal logic for scores > 0
     updateGameState({
       currentTeam: team.id,
       currentRound: roundIndex,
@@ -47,24 +111,27 @@ const RoundSelection = ({ gameState, updateGameState }) => {
   };
 
   const isRoundDisabled = (roundIndex) => {
+    if (!team.finalScores) return true;
     if (roundIndex === 0) {
       return team.finalScores[0] !== null;
     }
-    return team.finalScores[roundIndex - 1] === null || team.finalScores[roundIndex] !== null;
+    return (team.finalScores[roundIndex - 1] === null || team.finalScores[roundIndex - 1] === undefined) || team.finalScores[roundIndex] !== null;
   };
 
   const getRoundStatus = (roundIndex) => {
-    if (team.finalScores[roundIndex] !== null) {
+    if (team.finalScores && team.finalScores[roundIndex] !== null && team.finalScores[roundIndex] !== undefined) {
       return 'completed';
     }
     if (roundIndex === 0) {
       return 'active';
     }
-    if (team.finalScores[roundIndex - 1] !== null) {
+    if (team.finalScores && team.finalScores[roundIndex - 1] !== null && team.finalScores[roundIndex - 1] !== undefined) {
       return 'active';
     }
     return 'locked';
   };
+
+  const roundsArray = [0, 1, 2, 3, 4, 5, 6, 7];
 
   return (
     <div className="container">
@@ -82,14 +149,14 @@ const RoundSelection = ({ gameState, updateGameState }) => {
       <main className="main-content">
         <div className="intro-section">
           <h2 className="section-title">{team.name}</h2>
-          <p className="section-subtitle">Complete all 5 rounds sequentially</p>
+          <p className="section-subtitle">Complete all 8 rounds sequentially</p>
           <button className="btn btn-secondary btn-back" onClick={() => navigate('/')}>
             ← Back to Teams
           </button>
         </div>
 
         <div className="rounds-grid">
-          {[0, 1, 2, 3, 4].map((roundIndex) => {
+          {roundsArray.map((roundIndex) => {
             const status = getRoundStatus(roundIndex);
             const isDisabled = isRoundDisabled(roundIndex);
 
@@ -100,8 +167,9 @@ const RoundSelection = ({ gameState, updateGameState }) => {
               >
                 <div className="round-header">
                   <div className="round-number-large">
-                    Round {roundIndex + 1}
+                    {roundNames[roundIndex]}
                   </div>
+
                   {status === 'locked' && <span className="status-badge locked">🔒 Locked</span>}
                   {status === 'completed' && <span className="status-badge completed">✓ Completed</span>}
                   {status === 'active' && <span className="status-badge active">● Active</span>}
@@ -114,7 +182,7 @@ const RoundSelection = ({ gameState, updateGameState }) => {
                       type="number"
                       className="input-field"
                       placeholder="Enter score"
-                      value={localBaseScores[roundIndex] || ''}
+                      value={localBaseScores[roundIndex]}
                       onChange={(e) => handleBaseScoreChange(roundIndex, e.target.value)}
                       disabled={isDisabled}
                       min="0"
@@ -128,7 +196,11 @@ const RoundSelection = ({ gameState, updateGameState }) => {
                       type="number"
                       className="input-field"
                       placeholder="--"
-                      value={team.finalScores[roundIndex] !== null ? team.finalScores[roundIndex].toFixed(2) : ''}
+                      value={
+                        (team.finalScores && team.finalScores[roundIndex] !== null && team.finalScores[roundIndex] !== undefined)
+                          ? team.finalScores[roundIndex].toFixed(2) 
+                          : ''
+                      }
                       disabled
                       readOnly
                     />
@@ -139,7 +211,7 @@ const RoundSelection = ({ gameState, updateGameState }) => {
                     onClick={() => handleGoClick(roundIndex)}
                     disabled={isDisabled}
                   >
-                    Play Round
+                    {localBaseScores[roundIndex] === 0 ? 'Submit Zero' : 'Play Round'}
                   </button>
                 </div>
               </div>
@@ -150,13 +222,20 @@ const RoundSelection = ({ gameState, updateGameState }) => {
         <div className="team-summary">
           <div className="summary-item">
             <span className="summary-label">Rounds Completed</span>
-            <span className="summary-value">{team.finalScores.filter(s => s !== null).length}/5</span>
+            <span className="summary-value">
+                {team.finalScores ? team.finalScores.filter(s => s !== null && s !== undefined).length : 0}/8
+            </span>
           </div>
           <div className="summary-divider"></div>
           <div className="summary-item">
             <span className="summary-label">Grand Total</span>
             <span className="summary-value grand-total">
-              {team.finalScores.filter(s => s !== null).reduce((sum, score) => sum + score, 0).toFixed(2)}
+              {team.finalScores
+                ? team.finalScores
+                    .filter(s => s !== null && s !== undefined)
+                    .reduce((sum, score) => sum + score, 0)
+                    .toFixed(2)
+                : "0.00"}
             </span>
           </div>
         </div>
