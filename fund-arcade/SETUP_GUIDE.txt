@@ -1,0 +1,139 @@
+================================================================================
+FUND ARCADE - QUICK SETUP GUIDE FOR WINDOWS
+================================================================================
+
+📋 PREREQUISITES:
+- Node.js installed (download from https://nodejs.org/)
+- VS Code (recommended) or any code editor
+
+================================================================================
+🚀 SETUP STEPS:
+================================================================================
+
+1. EXTRACT THE PROJECT
+   - Extract the fund-arcade folder to your desired location
+   - Example: C:\Projects\fund-arcade
+
+2. OPEN COMMAND PROMPT OR POWERSHELL
+   - Press Win + R
+   - Type: cmd (or powershell)
+   - Press Enter
+
+3. NAVIGATE TO PROJECT FOLDER
+   - Type: cd path\to\fund-arcade
+   - Example: cd C:\Projects\fund-arcade
+   - Press Enter
+
+4. INSTALL DEPENDENCIES
+   - Type: npm install
+   - Press Enter
+   - Wait for installation to complete (may take 2-3 minutes)
+
+5. START THE APPLICATION
+   - Type: npm start
+   - Press Enter
+   - The app will automatically open in your browser at http://localhost:3000
+
+================================================================================
+🎮 HOW TO USE THE GAME:
+================================================================================
+
+STEP 1: TEAM DASHBOARD (Page 1)
+- You'll see 5 teams with 5 rounds each
+- Enter base scores for each round (must be > 0)
+- Rounds unlock sequentially (complete R1 to unlock R2, etc.)
+- Click "GO" button to proceed to strategy selection
+
+STEP 2: STRATEGY SELECTION (Page 2)
+- Choose one of three strategies:
+  
+  A - Safe Acquisition (Low Risk)
+      Multiplier: 1.0×
+      Risk Factor: Always 1.0
+  
+  B - Merger & Expansion (Medium Risk)
+      Multiplier: 2.0×
+      Risk Factor: 1.0 or 0.6 (random)
+  
+  C - IPO Attempt (High Risk)
+      Multiplier: 3.0×
+      Risk Factor: 1.0, 0.5, or 0.0 (random)
+
+- Click "Confirm Selection" to calculate results
+
+STEP 3: RESULT PAGE (Page 3)
+- Watch 8-second countdown animation
+- View your final score with animated wheel
+- See calculation breakdown
+- Click "Next Round" to continue
+
+================================================================================
+📊 GAME RULES:
+================================================================================
+
+- Total Games: 25 (5 teams × 5 rounds each)
+- Each team must complete rounds sequentially
+- Formula: Final Score = Base Score × Multiplier × Risk Factor
+- Higher risk strategies offer higher multipliers but unpredictable outcomes
+
+================================================================================
+🎨 KEY FEATURES:
+================================================================================
+
+✓ Sequential round progression with visual indicators
+✓ Professional animations (no continuous loops)
+✓ Real-time score tracking
+✓ Responsive design (works on all screen sizes)
+✓ Modern cyberpunk-inspired UI
+
+================================================================================
+⚠️ TROUBLESHOOTING:
+================================================================================
+
+ISSUE: npm install fails
+FIX: Delete node_modules folder and package-lock.json, then run npm install again
+
+ISSUE: Port 3000 already in use
+FIX: Close other applications using port 3000, or run:
+     set PORT=3001 && npm start
+
+ISSUE: Page doesn't open automatically
+FIX: Manually open browser and go to http://localhost:3000
+
+ISSUE: Styles not loading
+FIX: Clear browser cache (Ctrl + F5) and refresh
+
+================================================================================
+📁 PROJECT STRUCTURE:
+================================================================================
+
+fund-arcade/
+├── public/              → HTML template
+├── src/
+│   ├── components/      → React components (3 pages)
+│   ├── App.js          → Main app with routing
+│   └── index.js        → Entry point
+├── package.json        → Dependencies
+└── README.md           → Full documentation
+
+================================================================================
+🎯 IMPORTANT NOTES:
+================================================================================
+
+1. Always start from the team dashboard (home page)
+2. Complete rounds in order for each team
+3. Base score must be greater than 0
+4. You can only play unlocked rounds
+5. Final scores are automatically calculated and saved
+
+================================================================================
+📞 SUPPORT:
+================================================================================
+
+For issues or questions, contact the Web & Tech Team
+Event: Pune Startup Fest '26
+
+================================================================================
+© 2026 Pune Startup Fest. All rights reserved.
+Made by Web & Tech Team
+================================================================================
