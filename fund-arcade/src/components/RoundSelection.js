@@ -12,12 +12,12 @@ const RoundSelection = ({ gameState, updateGameState }) => {
   const roundNames = [
     "LearnUp",           // Round 1 Name
     "RentFurn",         // Round 2 Name
-    "HomeQuest",        // Round 3 Name
-    "FinWave",         // Round 4 Name
-    "ShopLink",         // Round 5 Name
-    "MealGenie",        // Round 6 Name
-    "TravelGo",       // Round 7 Name
-    "Zomato"          // Round 8 Name
+    "QuickFetch",        // Round 3 Name
+    "HomeQuest",         // Round 4 Name
+    "FinWave",         // Round 5 Name
+    "ShopLink",        // Round 6 Name
+    "MealGenie",       // Round 7 Name
+    "TravelGo"          // Round 8 Name
   ];
   // -------------------------------------------------
   
