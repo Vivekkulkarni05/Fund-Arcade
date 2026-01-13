@@ -46,7 +46,7 @@ const TeamList = ({ gameState, updateGameState }) => {
                 <div className="team-info">
                   <h3 className="team-name">{team.name}</h3>
                   <div className="team-progress">
-                    {team.finalScores.filter(s => s !== null).length}/5 Rounds Completed
+                    {team.finalScores.filter(s => s !== null).length}/8 Rounds Completed
                   </div>
                 </div>
               </div>
