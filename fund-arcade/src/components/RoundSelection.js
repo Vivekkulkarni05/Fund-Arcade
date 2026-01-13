@@ -10,13 +10,13 @@ const RoundSelection = ({ gameState, updateGameState }) => {
 
   // --- CONFIGURATION: EDIT YOUR ROUND NAMES HERE ---
   const roundNames = [
-    "Uber",           // Round 1 Name
-    "Airbnb",         // Round 2 Name
-    "Spotify",        // Round 3 Name
-    "SpaceX",         // Round 4 Name
-    "Stripe",         // Round 5 Name
-    "Zerodha",        // Round 6 Name
-    "Razorpay",       // Round 7 Name
+    "LearnUp",           // Round 1 Name
+    "RentFurn",         // Round 2 Name
+    "HomeQuest",        // Round 3 Name
+    "FinWave",         // Round 4 Name
+    "ShopLink",         // Round 5 Name
+    "MealGenie",        // Round 6 Name
+    "TravelGo",       // Round 7 Name
     "Zomato"          // Round 8 Name
   ];
   // -------------------------------------------------
